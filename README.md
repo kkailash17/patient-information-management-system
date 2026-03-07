@@ -32,7 +32,8 @@ patient-information-management-system
 2. Install required libraries
 
 ```
-pip install pandas matplotlib
+pip install pandas
+pip install matplotlib
 ```
 
 3. Run the program
