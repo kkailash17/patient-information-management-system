@@ -8,7 +8,7 @@ def load_data():
     try:
         return pd.read_csv('patient_data.csv', index_col='PatientID')
     except FileNotFoundError:
-        return pd.DataFrame(columns=['Name', 'Age', 'Gender', 'Contact'])
+        return pd.DataFrame(columns=['Name', 'Age', 'Gender', 'Contact', 'Reason'])
 
 
 def save_data(data):
@@ -82,25 +82,67 @@ def add_patient(data):
     age = int(input("Enter patient age: "))
     gender = input("Enter patient gender: ")
     contact = input("Enter patient contact number: ")
+    reason = input("Reason for hospital admission: ")
 
     patient_id = data.index.max() + 1 if not data.empty else 1
-    data.loc[patient_id] = [name, age, gender, contact]
+    data.loc[patient_id] = [name, age, gender, contact, reason]
 
     print("Patient record added successfully!")
 
 
 def search_patient(data):
-    try:
-        patient_id = int(input("Enter patient ID: "))
-    except ValueError:
-        print("Invalid ID.")
-        return
 
-    if patient_id in data.index:
-        print("\nPatient Information:")
-        print(data.loc[patient_id])
+    print("\nSearch Patient By:")
+    print("1. Patient ID")
+    print("2. Name")
+    print("3. Age")
+    print("4. Gender")
+
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        try:
+            patient_id = int(input("Enter Patient ID: "))
+            if patient_id in data.index:
+                print("\nPatient Information:")
+                print(data.loc[patient_id])
+            else:
+                print("Patient not found.")
+        except ValueError:
+            print("Invalid ID.")
+
+    elif choice == '2':
+        name = input("Enter patient name: ")
+        result = data[data['Name'].str.contains(name, case=False)]
+
+        if result.empty:
+            print("No patient found.")
+        else:
+            print(result)
+
+    elif choice == '3':
+        try:
+            age = int(input("Enter age: "))
+            result = data[data['Age'] == age]
+
+            if result.empty:
+                print("No patient found.")
+            else:
+                print(result)
+        except ValueError:
+            print("Invalid age.")
+
+    elif choice == '4':
+        gender = input("Enter gender (Male/Female): ")
+        result = data[data['Gender'].str.lower() == gender.lower()]
+
+        if result.empty:
+            print("No patient found.")
+        else:
+            print(result)
+
     else:
-        print("Patient not found.")
+        print("Invalid choice.")
 
 
 def update_patient(data):
@@ -118,6 +160,7 @@ def update_patient(data):
         age = input("Enter new age (press enter to keep same): ")
         gender = input("Enter new gender (press enter to keep same): ")
         contact = input("Enter new contact (press enter to keep same): ")
+        reason = input("Enter new reason (press enter to keep same): ")
 
         if name:
             data.loc[patient_id, 'Name'] = name
@@ -127,6 +170,8 @@ def update_patient(data):
             data.loc[patient_id, 'Gender'] = gender
         if contact:
             data.loc[patient_id, 'Contact'] = contact
+        if reason:
+            data.loc[patient_id, 'Reason'] = reason
 
         print("Patient record updated successfully!")
     else:
