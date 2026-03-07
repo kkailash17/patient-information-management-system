@@ -251,7 +251,7 @@ if __name__ == "__main__":
             create_account()
 
         elif choice == '4':
-            print("Exiting the program.")
+            print("Thank You. Have a Wonderful Day!.")
             break
 
         else:
